@@ -17,15 +17,17 @@
 -define(OUTPUT_ORDER, [<<"XXX">>, <<"FIXME">>, <<"TODO">>, <<"NOTE">>]).
 
 todo(Config, _AppFile) ->
-    BaseDir = rebar_config:get_global(base_dir, undefined),
+    BaseDir = rebar_utils:base_dir(Config),
     CurDir = rebar_utils:get_cwd(),
     if
         BaseDir == CurDir ->
-            todo(rebar_config:get(Config, todo, undefined));
+            todo(rebar_config:get(Config, todo, undefined))
+;
 
         true ->
             ok
-    end.
+    end
+.
 
 todo(undefined) ->
     ok;
@@ -62,7 +64,7 @@ add_regular_file(Name, Set) ->
     end.
 
 parse_many(Args, Files) ->
-    {ok, MP} = re:compile("(?P<kind>(TODO|FIXME|NOTE|XXX)):\s*(?P<text>.*)$"),
+    {ok, MP} = re:compile("(?P<kind>(TODO|FIXME|NOTE|XXX))\s*(?P<text>.*)$"),
     lists:foldl(fun (X, Acc) -> parse_one(MP, X, Acc) end, Files, Args).
 
 parse_one(MP, Name, Files) ->
